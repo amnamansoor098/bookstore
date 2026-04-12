@@ -1,0 +1,28 @@
+services:
+  app:
+    image: node:18-alpine
+    container_name: jenkins_web_app
+    working_dir: /app
+    volumes:
+      - ./server:/app
+    command: sh -c "npm install && node app.js"
+    ports:
+      - "3001:3000"
+    environment:
+      - MONGODB_URI=mongodb://mongo_jenkins:27017/bookstore
+      - PORT=3000
+    depends_on:
+      - mongo_jenkins
+    restart: always
+
+  mongo_jenkins:
+    image: mongo:6
+    container_name: jenkins_mongo_db
+    ports:
+      - "27018:27017"
+    volumes:
+      - mongo_data_jenkins:/data/db
+    restart: always
+
+volumes:
+  mongo_data_jenkins:
